@@ -1,7 +1,4 @@
-/** @format */
-
 import * as core from "@actions/core";
-
 import { ECS } from "aws-sdk";
 
 async function run(): Promise<void> {
@@ -20,9 +17,7 @@ async function run(): Promise<void> {
       });
     };
 
-    const getTagsFromResourceArn = async (
-      resourceArn: string
-    ): Promise<ECS.Tags> => {
+    const getTagsFromResourceArn = async (resourceArn: string): Promise<ECS.Tags> => {
       return new Promise<ECS.Tags>((resolve, reject) => {
         ecs.listTagsForResource({ resourceArn }, (error, resourceTags) => {
           if (error) {
@@ -35,11 +30,8 @@ async function run(): Promise<void> {
       });
     };
 
-    const getClusterArnFromTag = async (
-      tagKey: string,
-      tagValue: string
-    ): Promise<string> => {
-      let clusterArn: string;
+    const getClusterArnFromTag = async (tagKey: string, tagValue: string): Promise<string> => {
+      let clusterArn = null;
 
       const clusterArns = await getClusterArns();
 
