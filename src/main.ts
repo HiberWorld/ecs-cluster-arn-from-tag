@@ -1,67 +1,74 @@
-import * as core from '@actions/core';
+/** @format */
 
-import {ECS} from 'aws-sdk';
+import * as core from "@actions/core";
+
+import { ECS } from "aws-sdk";
 
 async function run(): Promise<void> {
-	try {
-		const ecs = new ECS();
+  try {
+    const ecs = new ECS();
 
-		const getClusterArns = async (): Promise<ECS.StringList> => {
-			return new Promise<string[]>((resolve, reject) => {
-				ecs.listClusters((error, data) => {
-					if (error) {
-						reject(error);
-						return;
-					}
-					resolve(data.clusterArns);
-				})
-			});
-		};
+    const getClusterArns = async (): Promise<ECS.StringList> => {
+      return new Promise<string[]>((resolve, reject) => {
+        ecs.listClusters((error, data) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve(data.clusterArns);
+        });
+      });
+    };
 
-		const getTagsFromResourceArn = async (resourceArn: string): Promise<ECS.Tags> => {
-			return new Promise<ECS.Tags>((resolve, reject) => {
-				ecs.listTagsForResource({resourceArn}, (error, resourceTags) => {
-					if (error) {
-						reject(error);
-						return;
-					}
+    const getTagsFromResourceArn = async (
+      resourceArn: string
+    ): Promise<ECS.Tags> => {
+      return new Promise<ECS.Tags>((resolve, reject) => {
+        ecs.listTagsForResource({ resourceArn }, (error, resourceTags) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-					resolve(resourceTags.tags);
-				})
-			});
-		};
+          resolve(resourceTags.tags);
+        });
+      });
+    };
 
-		const getClusterArnFromTag = async (tagKey: string, tagValue: string): Promise<string> => {
-			let clusterArn: string;
+    const getClusterArnFromTag = async (
+      tagKey: string,
+      tagValue: string
+    ): Promise<string> => {
+      let clusterArn: string;
 
-			const clusterArns = await getClusterArns();
+      const clusterArns = await getClusterArns();
 
-			for (const arn of clusterArns) {
-				const resourceTags = await getTagsFromResourceArn(arn);
+      for (const arn of clusterArns) {
+        const resourceTags = await getTagsFromResourceArn(arn);
 
-				resourceTags.map(tag => {
-					if (tag.key === tagKey && tag.value === tagValue) {
-						clusterArn = arn;
-					}
-				});
-			}
+        resourceTags.map((tag) => {
+          if (tag.key === tagKey && tag.value === tagValue) {
+            clusterArn = arn;
+          }
+        });
+      }
 
-			if (!clusterArn) {
-				throw new Error(`No arn found for tag ${tagKey} = ${tagValue}`);
-			}
+      if (!clusterArn) {
+        throw new Error(`No arn found for tag ${tagKey} = ${tagValue}`);
+      }
 
-			return clusterArn;
-		};
+      return clusterArn;
+    };
 
-		const name = core.getInput('tagName')
-		const value = core.getInput('tagValue')
+    const name = core.getInput("tagName");
+    const value = core.getInput("tagValue");
 
-		const arn = await getClusterArnFromTag(name, value);
+    const arn = await getClusterArnFromTag(name, value);
 
-		core.setOutput('arn', arn);
-	} catch (error) {
-		core.setFailed(error.message);
-	}
+    core.setOutput("arn", arn);
+  } catch (error) {
+    core.setFailed(error.message);
+  }
 }
 
 run();
