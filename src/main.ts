@@ -55,6 +55,9 @@ async function run(): Promise<void> {
     const name = core.getInput("tagName");
     const value = core.getInput("tagValue");
 
+    core.debug(`name = ${name}`);
+    core.debug(`value = ${value}`);
+
     const arn = await getClusterArnFromTag(name, value);
 
     core.setOutput("arn", arn);
