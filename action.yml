@@ -1,11 +1,14 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'ECS cluster ARN from tag'
+description: 'Get the cluster ARN from tag'
+author: 'Hiber'
 inputs:
-  milliseconds: # change this
+  tagName:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'name of the tag'
+  tagValue:
+    required: true
+    description: 'value of the tag'
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
