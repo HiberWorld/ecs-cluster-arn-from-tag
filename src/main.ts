@@ -57,7 +57,7 @@ async function run(): Promise<void> {
 
     const arn = await getClusterArnFromTag(name, value);
 
-    core.setOutput("arn", arn.split("/")[1]);
+    core.setOutput("arn", arn);
   } catch (error) {
     core.setFailed(error.message);
   }
