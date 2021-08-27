@@ -5,6 +5,11 @@ async function run(): Promise<void> {
   try {
     const ecs = new ECS();
 
+    const getEnv = () => {
+      const ref = process.env.GITHUB_REF!.split("/");
+      const branch = ref[ref?.length - 1];
+    };
+
     const getClusterArns = async (): Promise<ECS.StringList> => {
       return new Promise<string[]>((resolve, reject) => {
         ecs.listClusters((error, data) => {
@@ -12,7 +17,7 @@ async function run(): Promise<void> {
             reject(error);
             return;
           }
-          resolve(data.clusterArns);
+          resolve(data.clusterArns!);
         });
       });
     };
@@ -25,7 +30,7 @@ async function run(): Promise<void> {
             return;
           }
 
-          resolve(resourceTags.tags);
+          resolve(resourceTags.tags!);
         });
       });
     };
