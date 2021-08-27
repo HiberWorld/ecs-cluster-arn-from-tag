@@ -5,11 +5,6 @@ async function run(): Promise<void> {
   try {
     const ecs = new ECS();
 
-    const getEnv = () => {
-      const ref = process.env.GITHUB_REF!.split("/");
-      const branch = ref[ref?.length - 1];
-    };
-
     const getClusterArns = async (): Promise<ECS.StringList> => {
       return new Promise<string[]>((resolve, reject) => {
         ecs.listClusters((error, data) => {
@@ -60,13 +55,7 @@ async function run(): Promise<void> {
     const name = core.getInput("tagName");
     const value = core.getInput("tagValue");
 
-    core.debug(`name = ${name}`);
-
-    console.log(`value = ${value}`);
-
     const arn = await getClusterArnFromTag(name, value);
-
-    console.log(`arn = ${arn}`);
 
     core.setOutput("arn", arn);
   } catch (error) {
