@@ -34,10 +34,10 @@ async function run(): Promise<void> {
       let clusterArn = null;
 
       const clusterArns = await getClusterArns();
-
+      console.log({clusterArns})
       for (const arn of clusterArns) {
         const resourceTags = await getTagsFromResourceArn(arn);
-
+        console.log({arn, resourceTags})
         resourceTags.map((tag) => {
           if (tag.key === tagKey && tag.value === tagValue) {
             clusterArn = arn;
