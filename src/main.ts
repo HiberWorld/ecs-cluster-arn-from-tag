@@ -8,6 +8,7 @@ async function run(): Promise<void> {
     const getClusterArns = async (): Promise<ECS.StringList> => {
       return new Promise<string[]>((resolve, reject) => {
         ecs.listClusters((error, data) => {
+          console.log({data, error})
           if (error) {
             reject(error);
             return;
